@@ -1,4 +1,3 @@
-
 import pygame
 import random
 import math
@@ -14,9 +13,13 @@ clock = pygame.time.Clock()
 enemy_score = 0
 player_score = 0
 
+font = pygame.font.Font(None, 24)
+e_text = font.render(f"{player_score}", True ,(0,0,0))
+
+
 
 # paddle
-class paddle(pygame.sprite.Sprite):
+class paddle(pygame.sprite.Sprite):         
     def __init__(self, x, y):
         super().__init__()
 
@@ -116,6 +119,8 @@ class Ball(pygame.sprite.Sprite):
 
         self.colliding = current_hits
 
+        return player_score, enemy_score
+
     def reset(self):
         self.__init__(500, 300)
 
@@ -142,15 +147,23 @@ while True:
             pygame.quit()
             sys.exit()
 
+    e_text = font.render(f"{player_score}", True ,(0,0,0))
+    p_text = font.render(f"{enemy_score}", True ,(0,0,0))
+
     screen.fill((222, 251, 194))
 
     for enemy in enemys:
-        enemy.eupdate(ball.rect.centerx + random.randint(0, 50), 4)
+        enemy.eupdate(ball.rect.centerx + random.randint(0, 30), 4)
 
     for player in players:
         player.pupdate(5)
 
-    balls.update(paddles, 1000, 600, player_score, enemy_score)
+    player_score, enemy_score = ball.update(
+    paddles, 1000, 600, player_score, enemy_score
+)
+
+    screen.blit(e_text, (480, 250))
+    screen.blit(p_text, (480, 350))
 
     enemys.draw(screen)
     players.draw(screen)
